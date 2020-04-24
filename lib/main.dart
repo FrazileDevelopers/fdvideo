@@ -1,5 +1,6 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:video_player/video_player.dart';
 
 void main() => runApp(MyApp());
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Video Player',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.pink,
       ),
       home: MyHomePage(title: 'Video Player'),
     );
@@ -45,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
       aspectRatio: 3 / 2,
-      autoPlay: true,
+      autoPlay: false,
       looping: true,
       // Try playing around with some of these other options:
 
@@ -103,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         _chewieController = ChewieController(
                           videoPlayerController: _videoPlayerController1,
                           aspectRatio: 3 / 2,
-                          autoPlay: true,
+                          autoPlay: false,
                           looping: true,
                         );
                       });
@@ -131,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text("Error Video"),
+                      child: Text("Video 2"),
                     ),
                   ),
                 )
