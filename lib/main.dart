@@ -1,21 +1,27 @@
 import 'package:chewie/chewie.dart';
+import 'package:fdvideo/VideoService.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video Player',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Video Player'),
-    );
-  }
+  Widget build(BuildContext context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider<VideoService>(
+            create: (_) => VideoService(),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Video Player',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: MyHomePage(title: 'Video Player'),
+        ),
+      );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -28,51 +34,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TargetPlatform _platform;
-  VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
-  ChewieController _chewieController;
-
   @override
   void initState() {
     super.initState();
-    _videoPlayerController1 = VideoPlayerController.network(
-      'https://adsfly.net/videos/After.mp4',
-    );
-    _videoPlayerController2 = VideoPlayerController.network(
-      'https://adsfly.net/videos/After%20We%20Collided.mp4',
-    );
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController1,
-      aspectRatio: 3 / 2,
-      autoPlay: true,
-      looping: true,
-      // Try playing around with some of these other options:
-
-      // showControls: false,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
-    );
+    final videoService =
+        Provider.of<VideoService>(context).intializeController();
   }
 
   @override
   void dispose() {
-    _videoPlayerController1.dispose();
-    _videoPlayerController2.dispose();
-    _chewieController.dispose();
+    Provider.of<VideoService>(context).dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) { 
+    final video = Provider.of<VideoService>(context);
+    return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
@@ -81,93 +59,20 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: Center(
                 child: Chewie(
-                  controller: _chewieController,
+                  controller: video.chewieController,
                 ),
               ),
             ),
             FlatButton(
               onPressed: () {
-                _chewieController.enterFullScreen();
+                video.chewieController.enterFullScreen();
               },
               child: Text('Fullscreen'),
             ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        _chewieController.dispose();
-                        _videoPlayerController2.pause();
-                        _videoPlayerController2.seekTo(Duration(seconds: 0));
-                        _chewieController = ChewieController(
-                          videoPlayerController: _videoPlayerController1,
-                          aspectRatio: 3 / 2,
-                          autoPlay: true,
-                          looping: true,
-                        );
-                      });
-                    },
-                    child: Padding(
-                      child: Text("Video 1"),
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        _chewieController.dispose();
-                        _videoPlayerController1.pause();
-                        _videoPlayerController1.seekTo(Duration(seconds: 0));
-                        _chewieController = ChewieController(
-                          videoPlayerController: _videoPlayerController2,
-                          aspectRatio: 3 / 2,
-                          autoPlay: true,
-                          looping: true,
-                        );
-                      });
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text("Error Video"),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        _platform = TargetPlatform.android;
-                      });
-                    },
-                    child: Padding(
-                      child: Text("Android controls"),
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        _platform = TargetPlatform.iOS;
-                      });
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text("iOS controls"),
-                    ),
-                  ),
-                )
-              ],
-            )
+           
+            
           ],
         ),
       );
+}
 }
