@@ -48,31 +48,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     final video = Provider.of<VideoService>(context);
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: Center(
-                child: Chewie(
-                  controller: video.chewieController,
-                ),
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: Center(
+              child: Chewie(
+                controller: video.chewieController,
               ),
             ),
-            FlatButton(
-              onPressed: () {
-                video.chewieController.enterFullScreen();
-              },
-              child: Text('Fullscreen'),
-            ),
-           
-            
-          ],
-        ),
-      );
-}
+          ),
+          FlatButton(
+            onPressed: () {
+              video.chewieController.enterFullScreen();
+            },
+            child: Text('Fullscreen'),
+          ),
+        ],
+      ),
+    );
+  }
 }
